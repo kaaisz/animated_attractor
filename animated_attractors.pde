@@ -1,3 +1,6 @@
+// define canvas move
+float m = 0;
+
 // define value for de jong attractor
 float x, y, xn, yn;
 float a, b, c, d;
@@ -17,6 +20,7 @@ float angle = -30;
 void setup() {
   // init
   fullScreen();
+  pixelDensity(displayDensity());
   colorMode(HSB, 400, 100, 100);
   background(0);
   
@@ -41,7 +45,7 @@ void setup() {
 void draw() {
   // to rotate in center
   background(0, 50);
-  translate(width/2, height/2);
+  translate(width/2 + 300*sin(0.3 *m * PI), height/2 + 200*-cos(0.2*-m*PI));
   rotate(radians(angle));
  
   // *draw attractor*//
@@ -56,7 +60,6 @@ void draw() {
   a = 3 * cos(timer_dj);
   
   for (int i = 0; i < 10000; i++) {
-    // 課題: どうインクの色を変えるか - HSLのL値とH値(無理ならHを優先)を変えたい
     
     xn = x;
     yn = y;
@@ -90,7 +93,6 @@ void draw() {
   qn = q;
   
   for(int n = 0; n < 10000; n++){
-    // 課題: どうインクの色を変えるか - HSLのL値とH値(無理ならHを優先)を変えたい
     
     // pattern a
     //p =  sin(e * qn + timer_cl) + g * cos(e * pn + timer_cl) * sin(f * pn + timer_cl);
@@ -122,5 +124,6 @@ void draw() {
   
   // *draw attractor end* //
   
-  angle += 0.05;
+  angle += 0.1;
+    m += 0.01;
 }
