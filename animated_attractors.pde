@@ -3,19 +3,54 @@ float m = 0;
 
 // define value for de jong attractor
 float x, y, xn, yn;
-float a, b, c, d;
+float a, c, d;
+// -- random value setup to change in 10sec
+float[] b = {-2.5, -4, 1.3, -0.6};
+float currentB;
 int hue_dj;
 boolean increase_dj;
 
+float getRndB() {
+  int index = int(random(b.length));
+  return b[index];
+}
+
 // define value for clifford attractor
 float p, q, pn, qn;
-float e, f, g, h;
+// -- random value setup to change in 10sec
+float[] e = {-3.2, -1.8, 0.5, -4.0};
+float[] f = {-2.0, -1.3, -4, -2.0};
+float[] g = {-0.5, -0.5, -0.5, -0.5};
+float[] h = {-0.9, -0.9, -0.9, -0.9};
+float currentE;
+float currentF;
+float currentG;
+float currentH;
+int lastUpdate;
+
 int hue_cl;
 boolean increase_cl;
 
 float timer_dj;
 float timer_cl;
 float angle = -30;
+
+float getRndE() {
+  int index = int(random(e.length));
+  return e[index];
+}
+float getRndF() {
+  int index = int(random(f.length));
+  return f[index];
+}
+float getRndG() {
+  int index = int(random(g.length));
+  return g[index];
+}
+float getRndH() {
+  int index = int(random(h.length));
+  return h[index];
+}
 
 void setup() {
   // init
@@ -27,23 +62,25 @@ void setup() {
   // init value for de jong attractor
   x = y = xn = yn = a = c = d = 0;
   hue_dj = 200;
-  b = -2.25;
+  currentB = getRndB();
   
   // init value for clifford attractor
+  lastUpdate = millis();
   p = q = pn = qn = 0;
+  currentE = getRndE();
+  currentF = getRndF();
+  currentG = getRndG();
+  currentH = getRndH();
   hue_cl = 60;
-  e = -1.8;
-  f = -2.0;
-  g = -0.5;
-  h = -0.9;
   
   timer_dj = 0;
   timer_cl = 0;
   strokeWeight(2);
 }
 
+
 void draw() {
-  // to rotate in center
+  // to rotate and move attractor
   background(0, 50);
   translate(width/2 + 300*sin(0.3 *m * PI), height/2 + 200*-cos(0.2*-m*PI));
   rotate(radians(angle));
@@ -54,18 +91,20 @@ void draw() {
   // --------------------
   // de jong attractor
   // --------------------
-  timer_dj += 0.001;
+  if(millis() - lastUpdate >= 15000) {
+    currentB = getRndB();
+    lastUpdate = millis();
+  }
+  timer_dj += 0.005;
   c = 3 * cos(timer_dj);
   d = 3 * sin(timer_dj);
   a = 3 * cos(timer_dj);
   
-  for (int i = 0; i < 10000; i++) {
-    
+  for (int i = 0; i < 20000; i++) {
     xn = x;
     yn = y;
-    x = sin(a * yn) - cos(b * xn);
+    x = sin(a * yn) - cos(currentB * xn);
     y = sin(c * xn) - cos(d * yn);
-    
     
     point(200 * x,  200 * y);
     stroke(hue_dj, 40, 80);
@@ -86,21 +125,28 @@ void draw() {
   // --------------------
   // clifford attractor
   // --------------------
-  timer_cl += 0.003;
+  if(millis() - lastUpdate >= 10000) {
+    currentE = getRndE();
+    currentF = getRndF();
+    currentG = getRndG();
+    currentH = getRndH();
+    lastUpdate = millis();
+  }
+  timer_cl += 0.008;
   //x = millis()/2000;
   //y = millis()/2000;
   pn = p;
   qn = q;
   
-  for(int n = 0; n < 10000; n++){
+  for(int n = 0; n < 20000; n++){
     
     // pattern a
     //p =  sin(e * qn + timer_cl) + g * cos(e * pn + timer_cl) * sin(f * pn + timer_cl);
     //q =  sin(f * pn + timer_cl) + h * cos(f * qn + timer_cl) * sin(e * qn + timer_cl);
     
     // pattern b
-    p =  sin(e * qn + timer_cl)*cos(e * pn + timer_cl) + g * cos(e * pn + timer_cl) * sin(f * pn + timer_cl);
-    q =  sin(f * pn + timer_cl)*cos(f * qn + timer_cl) + h * cos(f * qn + timer_cl) * sin(e * qn + timer_cl);
+    p =  sin(currentE * qn + timer_cl)*cos(currentE * pn + timer_cl) + currentG * cos(currentE * pn + timer_cl) * sin(currentF * pn + timer_cl);
+    q =  sin(currentF * pn + timer_cl)*cos(currentF * qn + timer_cl) + currentH * cos(currentF * qn + timer_cl) * sin(currentE * qn + timer_cl);
 
     point(400 * p, 400 * q);
     stroke(hue_cl, 40, 80);
@@ -108,8 +154,7 @@ void draw() {
     pn = p;
     qn = q;
   }
-  
-  
+    
   if(increase_cl) {
     hue_cl++;
     if(hue_cl >= 400) {
@@ -125,5 +170,5 @@ void draw() {
   // *draw attractor end* //
   
   angle += 0.1;
-    m += 0.01;
+  m += 0.01;
 }
