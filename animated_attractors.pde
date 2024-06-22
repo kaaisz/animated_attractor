@@ -38,11 +38,11 @@ void setup() {
   fullScreen();
   pixelDensity(displayDensity());
   colorMode(HSB, 400, 100, 100);
-  background(0);
+  background(0, 0, 100);
   
   // init value for de jong attractor
   x = y = xn = yn = a = c = d = 0;
-  hue_dj = 200;
+  hue_dj = 300;
   currentB = getRnd(b);
   
   // init value for clifford attractor
@@ -56,13 +56,13 @@ void setup() {
   
   timer_dj = 0;
   timer_cl = 0;
-  strokeWeight(1.5);
+  strokeWeight(2);
 }
 
 
 void draw() {
   // to rotate and move attractor
-  background(0, 50);
+  background(0, 0, 100);
   translate(width/2 + 300*sin(0.3 *m * PI), height/2 + 200*-cos(0.2*-m*PI));
   rotate(radians(angle));
  
@@ -81,14 +81,14 @@ void draw() {
   d = 3 * sin(timer_dj);
   a = 3 * cos(timer_dj);
   
-  for (int i = 0; i < 30000; i++) {
+  for (int i = 0; i < 40000; i++) {
     xn = x;
     yn = y;
     x = sin(a * yn + cos(a)) - cos(currentB * xn + sin(c * xn));
     y = sin(c * xn) - cos(d * yn);
     
     point(240 * x,  240 * y);
-    stroke(hue_dj, 40, 80);
+    stroke(hue_dj, 80, 70);
   }
     
   if(increase_dj) {
@@ -119,7 +119,7 @@ void draw() {
   pn = p;
   qn = q;
   
-  for(int n = 0; n < 30000; n++){
+  for(int n = 0; n < 40000; n++){
     
     // pattern a
     p =  sin(currentE * qn + timer_cl) + currentG * cos(currentE * pn + timer_cl) * sin(currentF * pn + timer_cl);
@@ -130,7 +130,7 @@ void draw() {
     //q =  sin(currentF * pn + timer_cl)*cos(currentF * qn + timer_cl) + currentH * cos(currentF * qn + timer_cl) * sin(currentE * qn + timer_cl);
 
     point(400 * p, 400 * q);
-    stroke(hue_cl, 40, 80);
+    stroke(hue_cl, 80, 80);
 
     pn = p;
     qn = q;
