@@ -56,7 +56,6 @@ void setup() {
   // Attractor A
   p = q = pn = qn = 0;
   hue_cl1 = 60;
-
   // Attractor B
   r = s = rn = sn = 0;
   currentE = getRnd(e);
@@ -65,6 +64,7 @@ void setup() {
   currentH = getRnd(h);
   hue_cl2 = 1;
   
+  // timer
   timer_dj = 0;
   timer_cl1 = 0;
   timer_cl2 = 0;
@@ -75,14 +75,34 @@ void setup() {
 void draw() {
   // to rotate and move attractor
   background(0);
-  translate(width/3 + 200*-cos(0.2*-m*PI), height/2*sin(-0.3 *m * -PI));
-  rotate(radians(angle));
  
   ////////// *draw attractor start* ////////// 
+  
+  drawDeJongAttractor();
+  drawCliffordAttractorA();
+  drawCliffordAttractorB();
+  
+  ////////// *draw attractor end* ////////// 
+  
+  angle += 0.08;
+  m += 0.002;
+}
+
+int updateHue(int hue, boolean increase) {
+  if (increase) {
+    hue += 1;
+  } else {
+    hue -=1;
+  }
+  return hue;
+}
+
   // --------------------
   // de jong attractor
   // --------------------
-  // setup value switcher
+void drawDeJongAttractor() {
+  translate(width/2 + 200*-cos(0.2*-m*PI), height/2*sin(-0.3 *m * -PI));
+  rotate(radians(angle));
   if(millis() - lastUpdate >= 10000) {
     currentB = getRnd(b);
     lastUpdate = millis();
@@ -108,11 +128,13 @@ void draw() {
   } else if (hue_dj == 0) {
       increase_dj = true;
   }
+}
 
   // --------------------
   // clifford attractor A
   // --------------------
-  if(millis() - lastUpdate >= 8000) {
+void drawCliffordAttractorA() {
+   if(millis() - lastUpdate >= 8000) {
     currentE = getRnd(e);
     currentF = getRnd(f);
     currentG = getRnd(g);
@@ -138,43 +160,34 @@ void draw() {
   } else if (hue_cl1 == 0){
       increase_cl1 = true;
   }
-  
-  // --------------------
-  // clifford attractor B
-  // --------------------
-  translate(width/3 *sin(0.3 *m * PI), height/4*-cos(0.04*m*PI));
-  rotate(radians(angle));
-  
-  timer_cl2 += 0.003;
-  rn = r;
-  sn = s;
-  
-  for(int n = 0; n < 10000; n++){
-    r =  sin(currentE * sn + timer_cl2)*cos(currentE * rn + timer_cl2) + currentG * cos(currentE * rn + timer_cl2) * sin(currentF * rn + timer_cl2);
-    s =  sin(currentF * rn + timer_cl2)*cos(currentF * sn + timer_cl2) + currentH * cos(currentF * sn + timer_cl2) * sin(currentE * sn + timer_cl2);
-    point(240 * r, 240 * s);
-    stroke(hue_cl2, 40, 90);
-    rn = r;
-    sn = s;
-  }
-  
-  hue_cl2= updateHue(hue_cl2, increase_cl2);
-  if(hue_cl2 == 400) {
-     increase_cl2 = false;
-  } else if (hue_cl2 == 0){
-      increase_cl2 = true;
-  }
-  ////////// *draw attractor end* ////////// 
-  
-  angle += 0.08;
-  m += 0.002;
 }
 
-int updateHue(int hue, boolean increase) {
-  if (increase) {
-    hue++;
-  } else {
-    hue--;
+
+
+// --------------------
+// clifford attractor B
+// --------------------
+void drawCliffordAttractorB() {
+    translate(width/2 *sin(0.3 *m * PI), height/3*-cos(0.04*m*PI));
+    rotate(radians(-angle));
+    
+    timer_cl2 += 0.003;
+    rn = r;
+    sn = s;
+    
+    for(int n = 0; n < 10000; n++){
+      r =  sin(currentE * sn + timer_cl2)*cos(currentE * rn + timer_cl2) + currentG * cos(currentE * rn + timer_cl2) * sin(currentF * rn + timer_cl2);
+      s =  sin(currentF * rn + timer_cl2)*cos(currentF * sn + timer_cl2) + currentH * cos(currentF * sn + timer_cl2) * sin(currentE * sn + timer_cl2);
+      point(240 * r, 240 * s);
+      stroke(hue_cl2, 40, 90);
+      rn = r;
+      sn = s;
+    }
+    
+    hue_cl2= updateHue(hue_cl2, increase_cl2);
+    if(hue_cl2 == 400) {
+       increase_cl2 = false;
+    } else if (hue_cl2 == 0){
+        increase_cl2 = true;
+    }
   }
-  return hue;
-}
