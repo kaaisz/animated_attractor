@@ -1,3 +1,6 @@
+// for screenshot
+int screenshotCounter = 0;
+
 // define canvas move
 float m = 0;
 
@@ -20,8 +23,8 @@ int hue_cl2;
 boolean increase_cl2;
 
 // -- random value setup to change in 10sec
-float[] e = {-3.22846, -2.67889*cos(2*PI), -1.8};
-float[] f = {-2.42392, -1.3, -4, -2.06529, 1.8397894};
+float[] e = {-3.22846, -2.67889*cos(2*PI), -1.8*sin(2)};
+float[] f = {-2.42392237, -1.3, -4, -2.06529, 1.8397894};
 float[] g = {-0.5, -0.5, -0.5, -0.5};
 float[] h = {-0.9, -0.9, -0.9, -0.9};
 float currentE;
@@ -48,14 +51,14 @@ void setup() {
   
   // init value for de jong attractor
   x = y = xn = yn = a = c = d = 0;
-  hue_dj = 200;
+  hue_dj = 120;
   currentB = getRnd(b);
   
   // init value for clifford attractor
   lastUpdate = millis();
   // Attractor A
   p = q = pn = qn = 0;
-  hue_cl1 = 60;
+  hue_cl1 = 240;
   // Attractor B
   r = s = rn = sn = 0;
   currentE = getRnd(e);
@@ -77,15 +80,19 @@ void draw() {
   background(0);
  
   ////////// *draw attractor start* ////////// 
-  
   drawDeJongAttractor();
   drawCliffordAttractorA();
   drawCliffordAttractorB();
-  
   ////////// *draw attractor end* ////////// 
   
   angle += 0.08;
   m += 0.002;
+  
+  if(keyPressed) {
+    String filename = "screenshot_" + screenshotCounter + ".png";
+    saveFrame(filename);
+    screenshotCounter++;
+  }
 }
 
 int updateHue(int hue, boolean increase) {
@@ -101,24 +108,25 @@ int updateHue(int hue, boolean increase) {
   // de jong attractor
   // --------------------
 void drawDeJongAttractor() {
-  translate(width/2 + 200*-cos(0.2*-m*PI), height/2*sin(-0.3 *m * -PI));
+  translate(width/2 + 200*-cos(0.2*-m*PI), height/3*sin(-0.3 *m * -PI));
   rotate(radians(angle));
-  if(millis() - lastUpdate >= 10000) {
+  if(millis() - lastUpdate >= 10000) { // regenerate number once in 10sec
     currentB = getRnd(b);
     lastUpdate = millis();
   }
-  timer_dj += 0.0025;
+  timer_dj += 0.004; // speed
   c = 3 * cos(timer_dj);
   d = 3 * sin(timer_dj);
   a = 3 * cos(timer_dj);
   
-  for (int i = 0; i < 10000; i++) {
+  for (int i = 0; i < 20000; i++) { // density
     xn = x;
     yn = y;
-    x = sin(a * yn + cos(a)) - cos(currentB * xn + sin(c * xn));
+    x = sin(a * yn + cos(a)) - cos(currentB * xn + sin(c * xn)); // attractor formula
     y = sin(c * xn) - cos(d * yn);
-    point(160 * x,  160 * y);
-    stroke(hue_dj, 40, 90);
+    // render
+    point(160 * x,  160 * y); // attractor size
+    stroke(hue_dj, 35, 90); // color
   }
   
   hue_dj = updateHue(hue_dj, increase_dj);
@@ -134,23 +142,25 @@ void drawDeJongAttractor() {
   // clifford attractor A
   // --------------------
 void drawCliffordAttractorA() {
-  translate(width/4 + 200*-cos(0.2*-m*PI), height/4*sin(-0.3 *m * -PI));
-   if(millis() - lastUpdate >= 8000) {
+  // control entire movement
+  translate(width/3 + 200*-cos(0.2*-m*PI), height/3*sin(-0.3 *m + PI));
+  rotate(radians(-angle));
+   if(millis() - lastUpdate >= 8000) { // regenerate number once in 8sec
     currentE = getRnd(e);
     currentF = getRnd(f);
     currentG = getRnd(g);
     currentH = getRnd(h);
     lastUpdate = millis();
   }
-  timer_cl1 += 0.004;
+  timer_cl1 += 0.007; // speed
   pn = p;
   qn = q;
   
-  for(int n = 0; n < 10000; n++){
-    p =  sin(currentE * qn + timer_cl1) + currentG * cos(currentE * pn + timer_cl1) * sin(currentF * pn + timer_cl1);
+  for(int n = 0; n < 20000; n++){ // density
+    p =  sin(currentE * qn + timer_cl1) + currentG * cos(currentE * pn + timer_cl1) * sin(currentF * pn + timer_cl1); // attractor formula
     q =  sin(currentF * pn + timer_cl1) + currentH * cos(currentF * qn + timer_cl1) * sin(currentE * qn + timer_cl1);
-    point(240 * p, 240 * q);
-    stroke(hue_cl1, 40, 90);
+    point(240 * p, 240 * q); // attractor size
+    stroke(hue_cl1, 35, 90); // color
     pn = p;
     qn = q;
   }
@@ -167,20 +177,21 @@ void drawCliffordAttractorA() {
 
 // --------------------
 // clifford attractor B
-// --------------------
+// --------------------  
 void drawCliffordAttractorB() {
-    translate(width/6 *sin(0.3 *m * PI), height/6*-cos(0.04*m*PI));
+  // control entire movement
+    translate(width/4 *sin(0.3 *m * PI), height/2*-cos(0.04*m*PI)); 
     rotate(radians(-angle));
     
-    timer_cl2 += 0.003;
+    timer_cl2 += 0.005; // speed
     rn = r;
     sn = s;
     
-    for(int n = 0; n < 10000; n++){
-      r =  sin(currentE * sn + timer_cl2)*cos(currentE * rn + timer_cl2) + currentG * cos(currentE * rn + timer_cl2) * sin(currentF * rn + timer_cl2);
+    for(int n = 0; n < 20000; n++){ // density
+      r =  sin(currentE * sn + timer_cl2)*cos(currentE * rn + timer_cl2) + currentG * cos(currentE * rn + timer_cl2) * sin(currentF * rn + timer_cl2); // attractor formula
       s =  sin(currentF * rn + timer_cl2)*cos(currentF * sn + timer_cl2) + currentH * cos(currentF * sn + timer_cl2) * sin(currentE * sn + timer_cl2);
-      point(240 * r, 240 * s);
-      stroke(hue_cl2, 40, 90);
+      point(240 * r, 240 * s); // attractor size
+      stroke(hue_cl2, 35, 90); // color
       rn = r;
       sn = s;
     }
