@@ -68,7 +68,7 @@ void setup() {
   timer_dj = 0;
   timer_cl1 = 0;
   timer_cl2 = 0;
-  strokeWeight(1.5);
+  strokeWeight(1);
 }
 
 
@@ -117,7 +117,7 @@ void drawDeJongAttractor() {
     yn = y;
     x = sin(a * yn + cos(a)) - cos(currentB * xn + sin(c * xn));
     y = sin(c * xn) - cos(d * yn);
-    point(180 * x,  180 * y);
+    point(160 * x,  160 * y);
     stroke(hue_dj, 40, 90);
   }
   
@@ -134,6 +134,7 @@ void drawDeJongAttractor() {
   // clifford attractor A
   // --------------------
 void drawCliffordAttractorA() {
+  translate(width/4 + 200*-cos(0.2*-m*PI), height/4*sin(-0.3 *m * -PI));
    if(millis() - lastUpdate >= 8000) {
     currentE = getRnd(e);
     currentF = getRnd(f);
@@ -168,7 +169,7 @@ void drawCliffordAttractorA() {
 // clifford attractor B
 // --------------------
 void drawCliffordAttractorB() {
-    translate(width/2 *sin(0.3 *m * PI), height/3*-cos(0.04*m*PI));
+    translate(width/6 *sin(0.3 *m * PI), height/6*-cos(0.04*m*PI));
     rotate(radians(-angle));
     
     timer_cl2 += 0.003;
