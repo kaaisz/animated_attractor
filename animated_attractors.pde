@@ -21,7 +21,7 @@ boolean increase_cl2;
 
 // -- random value setup to change in 10sec
 float[] e = {-3.22846, -2.67889*cos(2*PI), -1.8};
-float[] f = {-2.02392, -1.3, -4, -2.06529, 1.8397894};
+float[] f = {-2.42392, -1.3, -4, -2.06529, 1.8397894};
 float[] g = {-0.5, -0.5, -0.5, -0.5};
 float[] h = {-0.9, -0.9, -0.9, -0.9};
 float currentE;
@@ -68,14 +68,14 @@ void setup() {
   timer_dj = 0;
   timer_cl1 = 0;
   timer_cl2 = 0;
-  strokeWeight(2);
+  strokeWeight(1.5);
 }
 
 
 void draw() {
   // to rotate and move attractor
   background(0);
-  translate(width/2 + 300*sin(0.3 *m * PI), height/2 + 200*-cos(0.2*-m*PI));
+  translate(width/3 + 200*-cos(0.2*-m*PI), height/2*sin(-0.3 *m * -PI));
   rotate(radians(angle));
  
   ////////// *draw attractor start* ////////// 
@@ -97,8 +97,8 @@ void draw() {
     yn = y;
     x = sin(a * yn + cos(a)) - cos(currentB * xn + sin(c * xn));
     y = sin(c * xn) - cos(d * yn);
-    point(200 * x,  200 * y);
-    stroke(hue_dj, 40, 90, 95);
+    point(180 * x,  180 * y);
+    stroke(hue_dj, 40, 90);
   }
   
   hue_dj = updateHue(hue_dj, increase_dj);
@@ -112,7 +112,6 @@ void draw() {
   // --------------------
   // clifford attractor A
   // --------------------
-  // setup value switcher
   if(millis() - lastUpdate >= 8000) {
     currentE = getRnd(e);
     currentF = getRnd(f);
@@ -127,8 +126,8 @@ void draw() {
   for(int n = 0; n < 10000; n++){
     p =  sin(currentE * qn + timer_cl1) + currentG * cos(currentE * pn + timer_cl1) * sin(currentF * pn + timer_cl1);
     q =  sin(currentF * pn + timer_cl1) + currentH * cos(currentF * qn + timer_cl1) * sin(currentE * qn + timer_cl1);
-    point(320 * p, 320 * q);
-    stroke(hue_cl1, 40, 90, 95);
+    point(240 * p, 240 * q);
+    stroke(hue_cl1, 40, 90);
     pn = p;
     qn = q;
   }
@@ -143,20 +142,20 @@ void draw() {
   // --------------------
   // clifford attractor B
   // --------------------
-  //translate(width/3 *sin(0.3 *m * PI), height/4*-cos(0.04*m*PI));
-  //rotate(radians(angle));
+  translate(width/3 *sin(0.3 *m * PI), height/4*-cos(0.04*m*PI));
+  rotate(radians(angle));
   
-  //timer_cl2 += 0.003;
-  //rn = r;
-  //sn = s;
+  timer_cl2 += 0.003;
+  rn = r;
+  sn = s;
   
-  //for(int n = 0; n < 10000; n++){
-  //  r =  sin(currentE * sn + timer_cl2)*cos(currentE * rn + timer_cl2) + currentG * cos(currentE * rn + timer_cl2) * sin(currentF * rn + timer_cl2);
-  //  s =  sin(currentF * rn + timer_cl2)*cos(currentF * sn + timer_cl2) + currentH * cos(currentF * sn + timer_cl2) * sin(currentE * sn + timer_cl2);
-  //  point(280 * r, 280 * s);
-  //  stroke(hue_cl2, 40, 90, 95);
-  //  rn = r;
-  //  sn = s;
+  for(int n = 0; n < 10000; n++){
+    r =  sin(currentE * sn + timer_cl2)*cos(currentE * rn + timer_cl2) + currentG * cos(currentE * rn + timer_cl2) * sin(currentF * rn + timer_cl2);
+    s =  sin(currentF * rn + timer_cl2)*cos(currentF * sn + timer_cl2) + currentH * cos(currentF * sn + timer_cl2) * sin(currentE * sn + timer_cl2);
+    point(240 * r, 240 * s);
+    stroke(hue_cl2, 40, 90);
+    rn = r;
+    sn = s;
   }
   
   hue_cl2= updateHue(hue_cl2, increase_cl2);
@@ -168,7 +167,7 @@ void draw() {
   ////////// *draw attractor end* ////////// 
   
   angle += 0.08;
-  m += 0.01;
+  m += 0.002;
 }
 
 int updateHue(int hue, boolean increase) {
